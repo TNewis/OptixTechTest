@@ -1,0 +1,77 @@
+﻿<Window x:Class="OptixTechTest.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OptixTechTest"
+        xmlns:converters="clr-namespace:OptixTechTest.Converters"
+        mc:Ignorable="d"
+        Title="Optix Tech Test- Card Shuffle" Height="450" Width="800">
+
+    <Window.Resources>
+        <converters:EnumSuitToSymbolConverter x:Key="EnumSuitToSymbolConverter" />
+        <converters:EnumSuitToColourConverter x:Key="EnumSuitToColourConverter" />
+        <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid Background="#028002">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+
+            <ItemsControl Grid.Column="2" Grid.Row="0" Height="100" VerticalAlignment="Center" ItemsSource="{Binding Deck}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="67" Height="91" Margin="-20,0,-40,0" Source="/Resources/CardBack.png"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid Visibility="{Binding CurrentCard, Converter={StaticResource ObjectToVisibilityConverter}}">
+                <Grid Width="67" Height="91" Background="White" DataContext="{Binding CurrentCard}" Visibility="{Binding CurrentCard, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <Border BorderThickness="1" BorderBrush="Black"></Border>
+                    <StackPanel>
+                        <Label Content="{Binding Suit, Converter={StaticResource EnumSuitToSymbolConverter}}" Foreground="{Binding Suit, Converter={StaticResource EnumSuitToColourConverter}}"/>
+                        <Label Content="{Binding Value}"/>
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+
+
+        </StackPanel>
+
+        <ListView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding DrawnCards}" SelectedItem="{Binding CurrentCard}" ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="100" Header="Suit" DisplayMemberBinding="{Binding Suit}"/>
+                    <GridViewColumn Width="100" Header="Value" DisplayMemberBinding="{Binding Value}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Button Width="80" Height="20" Command="{Binding CommandDraw}" Content="Draw"/>
+            <Button Width="80" Height="20" Command="{Binding CommandReset}" Content="Reset"/>
+            <Button Width="80" Height="20" Command="{Binding CommandShuffle}" Content="Shuffle"/>
+        </StackPanel>
+
+
+    </Grid>
+</Window>
